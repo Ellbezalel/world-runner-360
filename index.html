@@ -6,10 +6,19 @@
   <meta name="theme-color" content="#0b2545" />
   <title>World Runner 360</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="icon.svg" />
-  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="icon" type="image/png" href="icon-512.png" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
   <link rel="stylesheet" href="css/style.css" />
   <script src="js/three.min.js"></script>
+
+  <!-- Capture Chrome Install Prompt Immediately -->
+  <script>
+    window.deferredPWA = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      window.deferredPWA = e;
+    });
+  </script>
 
   <!-- Google H5 Games Ad Placement API (Test Mode ON) -->
   <script async
@@ -24,7 +33,7 @@
   <!-- Full-Screen Chrome PWA Install Page (Hides automatically once installed) -->
   <div id="install-screen">
     <div class="install-container">
-      <img src="icon.svg" alt="World Runner 360" class="install-app-icon" />
+      <img src="icon-512.png" alt="World Runner 360" class="install-app-icon" />
 
       <h1 class="install-heading">Download World Runner 360 App</h1>
       <p class="install-subheading">
