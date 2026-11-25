@@ -2,7 +2,7 @@
 // SERVICE WORKER: 100% OFFLINE APP SUPPORT
 // ==========================================
 
-const CACHE_NAME = 'world-runner-360-v1';
+const CACHE_NAME = 'world-runner-360-v5';
 const ASSETS_TO_CACHE = Array.of(
   './',
   './index.html',
