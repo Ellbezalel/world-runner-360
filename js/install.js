@@ -4,7 +4,6 @@
 
 let deferredInstallPrompt = null;
 
-// Register the offline Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js').catch(function(err) {
@@ -13,34 +12,49 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Check if already running as an installed app
 function isRunningStandalone() {
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }
 
-// Chrome fires this ONLY if the app is NOT currently installed on the device
+function showInstallScreen() {
+  const screen = document.getElementById('install-screen');
+  if (screen) screen.classList.remove('hidden');
+}
+
+function hideInstallScreen() {
+  const screen = document.getElementById('install-screen');
+  if (screen) screen.classList.add('hidden');
+}
+
+// Chrome fires this ONLY when the app is NOT installed on the device
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredInstallPrompt = e;
 
+  // Clear old flag if the user previously uninstalled the app
+  localStorage.removeItem('wr360_installed');
+
   if (!isRunningStandalone()) {
-    const installOverlay = document.getElementById('install-screen');
-    if (installOverlay) {
-      installOverlay.classList.remove('hidden');
-    }
+    showInstallScreen();
   }
 });
 
-// Hide install screen automatically as soon as installation finishes
+// Fires immediately when the user finishes installing the PWA
 window.addEventListener('appinstalled', function() {
   deferredInstallPrompt = null;
-  const installOverlay = document.getElementById('install-screen');
-  if (installOverlay) {
-    installOverlay.classList.add('hidden');
-  }
+  localStorage.setItem('wr360_installed', 'true');
+  hideInstallScreen();
 });
 
 document.addEventListener('DOMContentLoaded', function() {
+  const alreadyInstalled = localStorage.getItem('wr360_installed') === 'true';
+
+  if (isRunningStandalone() || alreadyInstalled) {
+    hideInstallScreen();
+  } else {
+    showInstallScreen();
+  }
+
   const installBtn = document.getElementById('btn-install-app');
   const skipBtn = document.getElementById('btn-skip-install');
 
@@ -50,17 +64,20 @@ document.addEventListener('DOMContentLoaded', function() {
         deferredInstallPrompt.prompt();
         deferredInstallPrompt.userChoice.then(function(choiceResult) {
           if (choiceResult.outcome === 'accepted') {
-            document.getElementById('install-screen').classList.add('hidden');
+            localStorage.setItem('wr360_installed', 'true');
+            hideInstallScreen();
           }
           deferredInstallPrompt = null;
         });
+      } else {
+        alert('To install: tap the browser menu (⋮ or Share) at the top/bottom of your screen and select "Install App" or "Add to Home Screen".');
       }
     };
   }
 
   if (skipBtn) {
     skipBtn.onclick = function() {
-      document.getElementById('install-screen').classList.add('hidden');
+      hideInstallScreen();
     };
   }
 });

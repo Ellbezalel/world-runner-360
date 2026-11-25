@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#0b2545" />
   <title>World Runner 360</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
@@ -21,14 +21,37 @@
 <body>
   <div id="game-container"></div>
 
-  <!-- First-Visit Chrome Install Screen (Hidden automatically once installed) -->
-  <div id="install-screen" class="overlay hidden" style="z-index: 30;">
-    <div class="menu-card">
-      <img src="icon.svg" alt="World Runner 360 Icon" style="width: 84px; height: 84px; margin-bottom: 12px;" />
-      <h2 class="game-title" style="font-size: 24px;">INSTALL <span>RUNNER 360</span></h2>
-      <p class="tagline">Install the official app on your device to play anytime—100% offline with zero data!</p>
-      <button id="btn-install-app" class="primary-btn">📲 INSTALL APP NOW</button>
-      <button id="btn-skip-install" class="nav-btn" style="width: 100%; font-size: 12px;">Continue in Browser</button>
+  <!-- Full-Screen Chrome PWA Install Page (Hides automatically once installed) -->
+  <div id="install-screen">
+    <div class="install-container">
+      <img src="icon.svg" alt="World Runner 360" class="install-app-icon" />
+
+      <h1 class="install-heading">Download World Runner 360 App</h1>
+      <p class="install-subheading">
+        Run Across Fictional Cities. Unlock Outfits &amp; Power-Ups. Play Anywhere with Confidence.
+      </p>
+
+      <div class="install-features-card">
+        <ul>
+          <li><span>✅</span> Free Forever</li>
+          <li><span>📴</span> Works Offline</li>
+          <li><span>🌍</span> 9+ Fictional Cities &amp; Outfits</li>
+          <li><span>🎮</span> Smooth 3D Endless Runner</li>
+          <li><span>⚡</span> Fast and Light - Works on any phone</li>
+        </ul>
+      </div>
+
+      <button id="btn-install-app" class="install-gold-btn">
+        📲 Install World Runner 360 App
+      </button>
+
+      <p class="install-note">Install World Runner 360 for offline play and faster access.</p>
+      <p class="install-note">Tap the button above to install World Runner 360</p>
+      <p class="install-rating">⭐⭐⭐⭐⭐ 4.9 • Loved by players in Gombe &amp; Nigeria</p>
+
+      <button id="btn-skip-install" class="install-web-btn">
+        Continue on Website →
+      </button>
     </div>
   </div>
 
