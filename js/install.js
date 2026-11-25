@@ -62,7 +62,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         window.deferredPWA = null;
       } else {
-        alert('Tap Chrome menu (⋮) at the top-right and tap "Install app" or "Add to Home screen".');
+        installBtn.dataset.waiting = 'true';
+        installBtn.textContent = '⏳ Preparing Installer...';
+        setTimeout(function() {
+          if (window.deferredPWA) {
+            installBtn.dataset.waiting = 'false';
+            installBtn.textContent = '📲 Install World Runner 360 App';
+            window.deferredPWA.prompt();
+          } else {
+            installBtn.dataset.waiting = 'false';
+            installBtn.textContent = '📲 Tap Chrome Menu (⋮) → Install App';
+          }
+        }, 2500);
       }
     };
   }
