@@ -26,13 +26,6 @@
   <link rel="apple-touch-icon" href="icon-512.png" />
   <link rel="stylesheet" href="css/style.css" />
   <script src="js/three.min.js"></script>
-
-  <!-- Google H5 Games Ad Placement API (Test Mode ON) -->
-  <script async
-    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-    data-adbreak-test="on"
-    src="https://googlesyndication.com">
-  </script>
 </head>
 <body>
   <div id="game-container"></div>
@@ -69,6 +62,39 @@
         Continue on Website →
       </button>
     </div>
+  </div>
+
+  <!-- In-App Rewarded Ad Overlay (Top-Right X appears after 5 seconds) -->
+  <div id="ad-modal" class="hidden">
+    <div class="ad-top-bar">
+      <span id="ad-timer-text">⏳ Reward ready in 5s...</span>
+      <button id="btn-close-ad" class="hidden" title="Close Ad">✖</button>
+    </div>
+    <iframe id="ad-iframe" src="about:blank" title="Advertisement"></iframe>
+  </div>
+
+  <!-- In-App Privacy Policy Overlay (Bottom-Left Back to Game button) -->
+  <div id="privacy-modal" class="hidden">
+    <div class="privacy-inner">
+      <h1>Privacy Policy for World Runner 360</h1>
+      <p>Last updated: November 2026</p>
+      <p>World Runner 360 is a free-to-play 3D endless runner game built by <strong>Eleazar Alhaji Maaji</strong>. We respect your privacy and keep data collection minimal.</p>
+
+      <h2>1. Game Progress Storage</h2>
+      <p>Your coins, unlocked fictional cities, outfits, and mission progress are saved locally on your device using browser storage so you can play offline anytime.</p>
+
+      <h2>2. Third-Party Advertising</h2>
+      <p>We display rewarded and in-game advertisements through third-party ad networks (such as Adsterra) to keep the game free to play. Ad partners may use standard cookies or non-personal device signals to deliver relevant ads.</p>
+
+      <h2>3. Builder &amp; Contact Information</h2>
+      <p>If you have questions about this Privacy Policy or the game, you can reach the builder directly:</p>
+      <div class="privacy-contact-card">
+        <p><strong>Builder:</strong> Eleazar Alhaji Maaji</p>
+        <p><strong>Phone:</strong> +2349136355760</p>
+        <p><strong>Email:</strong> ellbezalel9@gmail.com</p>
+      </div>
+    </div>
+    <button id="btn-close-privacy">← Back to Game</button>
   </div>
 
   <!-- In-Game HUD -->
@@ -124,7 +150,7 @@
         💻 <b>PC:</b> Arrow Keys or WASD • Press <b>E</b> for 360 Spin
       </p>
       <p class="privacy-link">
-        Built by <b>Eleazar Alhaji Maaji</b> • <a href="privacy.html" target="_blank">Privacy Policy</a>
+        Built by <b>Eleazar Alhaji Maaji</b> • <a href="#" id="btn-open-privacy">Privacy Policy</a>
       </p>
     </div>
   </div>
