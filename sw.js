@@ -1,4 +1,4 @@
-const CACHE_NAME = 'world-runner-360-v6';
+const CACHE_NAME = 'world-runner-360-v9';
 
 self.addEventListener('install', function(event) {
   self.skipWaiting();

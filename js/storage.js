@@ -1,36 +1,22 @@
-// ==========================================
-// STORAGE: LOCAL SAVE & MISSION TRACKING
-// ==========================================
-
+const STORAGE_KEY = 'world_runner_360_save_v1';
 const defaultSave = {
-  coins: 50,
-  naira: 2,
-  selectedCity: 'savanna_gate',
-  unlockedCities: Array.of('savanna_gate'),
-  ownedOutfits: Array.of('white_agbada'),
-  equippedOutfit: 'white_agbada',
-  ownedShoes: Array.of('sneakers'),
-  equippedShoes: 'sneakers',
-  ownedTrails: Array.of('none'),
-  equippedTrail: 'none',
-  highScore: 0,
+  coins: 50, naira: 2, highScore: 0,
+  selectedCity: 'savanna_gate', unlockedCities: ['savanna_gate'],
+  equippedOutfit: 'white_agbada', ownedOutfits: ['white_agbada'],
+  equippedShoes: 'sneakers', ownedShoes: ['sneakers'],
+  equippedTrail: 'none', ownedTrails: ['none'],
   missions: { dist_360: 0, coins_50: 0, jumps_20: 0, spin_3: 0 },
-  claimedMissions: Array.of()
+  claimedMissions: []
 };
-
-let saveData = JSON.parse(localStorage.getItem('worldRunner360SaveV2')) || defaultSave;
-
+let saveData = Object.assign({}, defaultSave, JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'));
 function persistSave() {
-  localStorage.setItem('worldRunner360SaveV2', JSON.stringify(saveData));
-  if (typeof updateMenuUI === 'function') {
-    updateMenuUI();
-  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saveData));
+  if (typeof updateMenuUI === 'function') updateMenuUI();
 }
-
-function trackMission(id, amount, isBest) {
-  if (saveData.claimedMissions.includes(id)) return;
-  if (isBest) {
-    saveData.missions[id] = Math.max(saveData.missions[id] || 0, amount);
+function trackMission(id, amount, isMax) {
+  if (!saveData.missions) saveData.missions = {};
+  if (isMax) {
+    if (amount > (saveData.missions[id] || 0)) saveData.missions[id] = amount;
   } else {
     saveData.missions[id] = (saveData.missions[id] || 0) + amount;
   }
