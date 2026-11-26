@@ -1,7 +1,21 @@
-const CACHE_NAME = 'world-runner-360-v9';
+const CACHE_NAME = 'world-runner-360-bike-v1';
+const ASSETS = Array.of(
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/css/style.css',
+  '/js/three.min.js'
+);
 
 self.addEventListener('install', function(event) {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.addAll(ASSETS);
+    })
+  );
 });
 
 self.addEventListener('activate', function(event) {
@@ -17,18 +31,15 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  if (!event.request.url.startsWith(self.location.origin)) {
-    return;
-  }
-
+  if (!event.request.url.startsWith(self.location.origin)) return;
   event.respondWith(
     fetch(event.request)
-      .then(function(networkResponse) {
-        const clone = networkResponse.clone();
+      .then(function(res) {
+        const copy = res.clone();
         caches.open(CACHE_NAME).then(function(cache) {
-          cache.put(event.request, clone);
+          cache.put(event.request, copy);
         });
-        return networkResponse;
+        return res;
       })
       .catch(function() {
         return caches.match(event.request);
