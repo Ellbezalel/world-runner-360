@@ -7,6 +7,7 @@ const ADSTERRA_SOCIAL_BAR = 'https://bauval.org';
 
 let socialBarLoaded = false;
 
+// Injects Social Bar ONLY after a race finishes so it never blocks Main Menu buttons
 function loadSocialBarAd() {
   if (socialBarLoaded) return;
   socialBarLoaded = true;
@@ -17,16 +18,12 @@ function loadSocialBarAd() {
   document.body.appendChild(s);
 }
 
-window.addEventListener('load', function() {
-  setTimeout(loadSocialBarAd, 3000);
-});
-
 function showInterstitialAd(onFinishedCallback) {
   loadSocialBarAd();
   if (onFinishedCallback) onFinishedCallback();
 }
 
-// Opens the Ad inside the app with a 5-second timer before showing the top-right X button
+// Opens the Ad inside the app with a 5-second countdown before showing the top-right X
 function openInAppAd(onRewardEarned) {
   const adModal = document.getElementById('ad-modal');
   const adIframe = document.getElementById('ad-iframe');
@@ -64,7 +61,6 @@ function openInAppAd(onRewardEarned) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Revive Button
   const reviveAdBtn = document.getElementById('btn-revive-ad');
   if (reviveAdBtn) {
     reviveAdBtn.onclick = function() {
@@ -78,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
-  // Shop +50 Free Coins Button
   const shopAdCoinsBtn = document.getElementById('btn-ad-coins');
   if (shopAdCoinsBtn) {
     shopAdCoinsBtn.onclick = function() {
@@ -91,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
-  // In-App Privacy Policy Open & Back to Game
   const openPrivacyLink = document.getElementById('btn-open-privacy');
   const closePrivacyBtn = document.getElementById('btn-close-privacy');
   const privacyModal = document.getElementById('privacy-modal');

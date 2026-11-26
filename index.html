@@ -6,18 +6,21 @@
   <meta name="theme-color" content="#0b2545" />
   <title>World Runner 360 — Bike Race</title>
 
+  <!-- Automatically hide install screen when launched as an installed app -->
+  <style>
+    @media all and (display-mode: standalone) {
+      #install-screen {
+        display: none !important;
+      }
+    }
+  </style>
+
   <!-- Capture Chrome Install Prompt Before Heavy Scripts Load -->
   <script>
     window.deferredPWA = null;
     window.addEventListener('beforeinstallprompt', function(e) {
       e.preventDefault();
       window.deferredPWA = e;
-      const btn = document.getElementById('btn-install-app');
-      if (btn && btn.dataset.waiting === 'true') {
-        btn.dataset.waiting = 'false';
-        btn.textContent = '📲 Install World Runner 360 App';
-        e.prompt();
-      }
     });
   </script>
 
@@ -50,11 +53,7 @@
         </ul>
       </div>
 
-      <button id="btn-install-app" class="install-gold-btn">
-        📲 Install World Runner 360 App
-      </button>
-      
-      <button id="btn-install-app" class="install-gold-btn" onclick="if(window.deferredPWA){window.deferredPWA.prompt();}else{this.textContent='📲 Tap Chrome Menu (⋮) → Install App';}">
+      <button id="btn-install-app" class="install-gold-btn" onclick="if(window.deferredPWA){window.deferredPWA.prompt();}else{this.textContent='📲 Tap Browser Menu (⋮) → Install App';}">
         📲 Install World Runner 360 App
       </button>
 
@@ -240,8 +239,3 @@
       <button id="btn-revive-ad" class="secondary-btn ad-btn">🎬 Watch Ad to Continue Race (Free)</button>
       <button id="btn-revive-naira" class="secondary-btn">💵 Continue Now (5 Naira Notes)</button>
       <button id="btn-restart" class="primary-btn">🔄 RACE AGAIN</button>
-      <button id="btn-home" class="nav-btn" style="width: 100%; margin-top: 8px;">🏠 Main Menu</button>
-    </div>
-  </div>
-
-  <!-- Load Modular Scripts in Exact Order -->

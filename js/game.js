@@ -26,7 +26,6 @@ let aiRivals = Array.of();
 const playerGroup = new THREE.Group();
 let playerFrontWheel, playerRearWheel, playerJetFlame, shieldBubble;
 
-// Builds a detailed 3D Bike/Moto + Rider (Bound Character or AI Rival)
 function createRacerAssembly(opts) {
   const root = new THREE.Group();
   const bikeMat = new THREE.MeshLambertMaterial({ color: opts.bikeColor });
@@ -34,7 +33,6 @@ function createRacerAssembly(opts) {
   const tireMat = new THREE.MeshLambertMaterial({ color: 0x090d16 });
   const metalMat = new THREE.MeshLambertMaterial({ color: 0x94a3b8 });
 
-  // Front & Rear Wheels
   function makeWheel(zPos) {
     const wGroup = new THREE.Group();
     wGroup.position.set(0, 0.42, zPos);
@@ -54,7 +52,6 @@ function createRacerAssembly(opts) {
   const rearWheel = makeWheel(0.78);
   root.add(frontWheel, rearWheel);
 
-  // Bike Frame, Forks, Handlebars & Seat
   const mainBar = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.35, 10), bikeMat);
   mainBar.rotation.x = Math.PI / 2.2;
   mainBar.position.set(0, 0.72, 0);
@@ -76,7 +73,6 @@ function createRacerAssembly(opts) {
 
   root.add(mainBar, downTube, fork, handlebar, seat);
 
-  // Jet / Nitro Exhaust Cone
   const flame = new THREE.Mesh(
     new THREE.ConeGeometry(0.16, 0.65, 10),
     new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
@@ -85,19 +81,16 @@ function createRacerAssembly(opts) {
   flame.position.set(0, 0.65, 1.15);
   root.add(flame);
 
-  // Rider Character
   const jacketMat = new THREE.MeshLambertMaterial({ color: opts.jacketColor });
   const pantsMat = new THREE.MeshLambertMaterial({ color: opts.pantsColor });
   const skinMat = new THREE.MeshLambertMaterial({ color: opts.isBot ? 0xe2e8f0 : 0xd99b66 });
   const hatMat = new THREE.MeshLambertMaterial({ color: opts.hatColor });
 
-  // Torso leaning forward onto handlebars
   const torso = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.68, 0.34), jacketMat);
   torso.position.set(0, 1.38, 0.08);
   torso.rotation.x = -0.38;
   root.add(torso);
 
-  // Robot Jetpack if Z-Bot
   if (opts.isBot) {
     const pack = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.48, 0.24), bikeMat);
     pack.position.set(0, 1.45, 0.32);
@@ -105,7 +98,6 @@ function createRacerAssembly(opts) {
     root.add(pack);
   }
 
-  // Head + Beanie / Visor
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 14, 14), skinMat);
   head.position.set(0, 1.88, -0.14);
 
@@ -121,8 +113,7 @@ function createRacerAssembly(opts) {
 
   root.add(head, visor, beanie);
 
-  // Arms gripping handlebars
-  [-0.28, 0.28].forEach(xSide => {
+  Array.of(-0.28, 0.28).forEach(xSide => {
     const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.58, 8), jacketMat);
     arm.position.set(xSide, 1.42, -0.24);
     arm.rotation.x = -1.05;
@@ -145,7 +136,6 @@ function buildPlayerModel() {
   const bike = SHOP_ITEMS.outfits.find(o => o.id === saveData.equippedOutfit) || SHOP_ITEMS.outfits.at(0);
   const rims = SHOP_ITEMS.shoes.find(s => s.id === saveData.equippedShoes) || SHOP_ITEMS.shoes.at(0);
 
-  // Bound to ONE signature character: Red-Jacket Beanie Rider (Ace)
   const assembly = createRacerAssembly({
     bikeColor: bike.color,
     rimColor: rims.color,
@@ -160,7 +150,6 @@ function buildPlayerModel() {
   playerJetFlame = assembly.flame;
   playerGroup.add(assembly.group);
 
-  // Energy Shield Bubble
   const shieldGeo = new THREE.SphereGeometry(1.55, 18, 18);
   const shieldMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.45 });
   shieldBubble = new THREE.Mesh(shieldGeo, shieldMat);
@@ -175,7 +164,6 @@ function spawnAIRivals() {
   aiRivals.forEach(r => scene.remove(r.group));
   aiRivals = Array.of();
 
-  // Rival 1: Kira on Teal E-Bike
   const kira = createRacerAssembly({
     bikeColor: 0x14b8a6,
     rimColor: 0xfacc15,
@@ -198,7 +186,6 @@ function spawnAIRivals() {
     aiTimer: 1.2
   });
 
-  // Rival 2: Z-Bot on Blue Jet Mini-Moto
   const zbot = createRacerAssembly({
     bikeColor: 0x38bdf8,
     rimColor: 0xf43f5e,
@@ -237,7 +224,6 @@ function setupCityEnvironment(cityId) {
     finishArch = null;
   }
 
-  // Industrial Steel & Asphalt Track
   roadMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(9.4, 300),
     new THREE.MeshLambertMaterial({ color: city.road })
@@ -246,7 +232,6 @@ function setupCityEnvironment(cityId) {
   roadMesh.position.z = -100;
   scene.add(roadMesh);
 
-  // Hazard-Striped Curbs & Lane Dividers
   roadLinesGroup = new THREE.Group();
   const curbMat = new THREE.MeshLambertMaterial({ color: 0x475569 });
   const leftCurb = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.3, 300), curbMat);
@@ -277,31 +262,31 @@ function setupCityEnvironment(cityId) {
   groundMesh.position.set(0, -0.05, -100);
   scene.add(groundMesh);
 
-  // Industrial Skyline, Gantry Trusses, Neon Signs & Hover Drones
   sceneryGroup = new THREE.Group();
-const winMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
-const neonMat = new THREE.MeshBasicMaterial({ color: city.neon });
-const trussMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
-for (let i = 0; i < 36; i++) {
-const side = i % 2 === 0 ? -1 : 1;
-const propGroup = new THREE.Group();
-propGroup.position.z = -i * 8;
-const w = 4.5 + Math.random() * 2.5;
-const h = 7 + Math.random() * 16;
-const d = 5.4;
-const bMesh = new THREE.Mesh(
-new THREE.BoxGeometry(w, h, d),
-new THREE.MeshLambertMaterial({ color: city.building })
-);
-bMesh.position.set(side * (9.8 + Math.random() * 2.5), h / 2, 0);
-propGroup.add(bMesh);
-// Glowing Windows
-for (let wy = 2.5; wy < h - 1.5; wy += 2.4) {
-const win = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.85, d * 0.72), winMat);
+  const winMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+  const neonMat = new THREE.MeshBasicMaterial({ color: city.neon });
+  const trussMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
+
+  for (let i = 0; i < 36; i++) {
+    const side = i % 2 === 0 ? -1 : 1;
+    const propGroup = new THREE.Group();
+    propGroup.position.z = -i * 8;
+
+    const w = 4.5 + Math.random() * 2.5;
+    const h = 7 + Math.random() * 16;
+    const d = 5.4;
+    const bMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(w, h, d),
+      new THREE.MeshLambertMaterial({ color: city.building })
+    );
+    bMesh.position.set(side * (9.8 + Math.random() * 2.5), h / 2, 0);
+    propGroup.add(bMesh);
+
+    for (let wy = 2.5; wy < h - 1.5; wy += 2.4) {
+      const win = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.85, d * 0.72), winMat);
 win.position.set(bMesh.position.x - side * (w / 2 + 0.02), wy, 0);
 propGroup.add(win);
 }
-// Overhead Industrial Steel Gantries & Neon "BOOST / RUSH" Billboards every 4 blocks
 if (i % 4 === 0) {
 const pL = new THREE.Mesh(new THREE.BoxGeometry(0.4, 7.5, 0.4), trussMat);
 pL.position.set(-5.2, 3.75, 0);
@@ -313,7 +298,6 @@ const neonSign = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.95, 0.65), neonMat)
 neonSign.position.set(0, 7.4, 0);
 propGroup.add(pL, pR, topBeam, neonSign);
 }
-// Floating Hover Drone along track edge
 if (i % 3 === 1) {
 const drone = new THREE.Group();
 drone.position.set(side * 4.4, 4.2 + (i % 2), 0);
@@ -395,7 +379,6 @@ trailParticles = Array.of();
 function createObstacleMesh(type) {
 const group = new THREE.Group();
 if (type === 'ramp') {
-// Sloped Yellow & Black Jump Ramp
 const rampMat = new THREE.MeshLambertMaterial({ color: 0xfacc15 });
 const base = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.95, 3.4), rampMat);
 base.position.set(0, 0.35, 0);
@@ -409,7 +392,6 @@ stripe.rotation.x = 0.28;
 group.add(base, stripe);
 return { mesh: group, kind: 'ramp' };
 } else if (type === 'boost') {
-// Glowing Cyan "BOOST ZONE" Floor Pad
 const pad = new THREE.Mesh(
 new THREE.BoxGeometry(2.1, 0.08, 4.2),
 new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
@@ -423,10 +405,8 @@ core.position.y = 0.05;
 group.add(pad, core);
 return { mesh: group, kind: 'boost' };
 } else if (type === 'spikes') {
-// Metallic Floor Spikes (Jump Over)
 const plate = new THREE.Mesh(
-new THREE.BoxGeometry(2.0,
-0.14, 1.4),
+new THREE.BoxGeometry(2.0, 0.14, 1.4),
 new THREE.MeshLambertMaterial({ color: 0x334155 })
 );
 plate.position.y = 0.07;
@@ -439,7 +419,6 @@ group.add(cone);
 }
 return { mesh: group, kind: 'low' };
 } else if (type === 'high') {
-// Overhead Laser/Steel Gate (Duck/Slide Under)
 const pMat = new THREE.MeshLambertMaterial({ color: 0x475569 });
 const p1 = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 2.8, 10), pMat);
 p1.position.set(-1.05, 1.4, 0);
@@ -453,7 +432,6 @@ beam.position.y = 2.05;
 group.add(p1, p2, beam);
 return { mesh: group, kind: 'high' };
 } else {
-// Striped Orange & White Rush Barrier (Jump Over)
 const postMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
 const leg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.95, 8), postMat);
 leg1.position.set(-0.85, 0.48, 0);
@@ -694,7 +672,6 @@ document.getElementById('end-score').textContent = Math.floor(score);
 document.getElementById('end-dist').textContent = Math.floor(distance) + 'm';
 document.getElementById('end-coins').textContent = '+' + runCoins;
 document.getElementById('end-naira').textContent = '+' + runNaira;
-// Hide revive buttons when race is already finished
 document.getElementById('btn-revive-ad').classList.add('hidden');
 document.getElementById('btn-revive-naira').classList.add('hidden');
 document.getElementById('hud').classList.add('hidden');
@@ -773,7 +750,6 @@ const currentSpeed = gameSpeed * speedMult;
 gameSpeed = Math.min(46, gameSpeed + delta * 0.35);
 distance += currentSpeed * delta * 0.5;
 score += currentSpeed * delta * (activePowerups.suya > 0 ? 4 : 2);
-// Spawn Finish Line Arch near end of track
 if (!finishSpawned && distance >= cityObj.raceDist - 55) {
 finishSpawned = true;
 finishArch = createFinishLineArch();
@@ -787,7 +763,6 @@ handleRaceFinish(getCurrentRaceRank());
 return;
 }
 }
-// Player Lane Lean & Wheel Spin
 const targetX = LANES.at(currentLane);
 playerGroup.position.x += (targetX - playerGroup.position.x) * Math.min(1, delta * 14);
 playerGroup.rotation.z = (playerGroup.position.x - targetX) * 0.22;
@@ -822,14 +797,11 @@ spinTimer -= delta;
 playerGroup.rotation.y += delta * 22;
 if (spinTimer <= 0) playerGroup.rotation.y = 0;
 }
-// Update AI Rivals (Kira & Z-Bot)
 aiRivals.forEach(rival => {
 rival.aiTimer -= delta;
 if (rival.aiTimer <= 0) {
 rival.aiTimer = 0.8 + Math.random() * 1.1;
-// Dynamic rubber-band speed so rivals stay competitive
 rival.speedOffset = (Math.random() - 0.45) * 4.5;
-// Switch lanes smartly
 const nextLane = Math.floor(Math.random() * 3);
 if (nextLane !== currentLane || Math.abs(rival.z) > 4) {
 rival.lane = nextLane;
@@ -844,7 +816,6 @@ rival.group.position.z = rival.z;
 rival.group.rotation.z = (rival.group.position.x - rTargetX) * 0.2;
 rival.frontWheel.rotation.x -= rivalSpeed * delta * 0.8;
 rival.rearWheel.rotation.x -= rivalSpeed * delta * 0.8;
-// Rival jumps if an obstacle gets close
 obstacles.forEach(obs => {
 if (obs.lane === rival.lane && Math.abs(obs.mesh.position.z - rival.z) < 4.5 && rival.group.position.y === 0) {
 rival.vy = 13.5;
@@ -1073,4 +1044,3 @@ buildPlayerModel();
 setupCityEnvironment(saveData.selectedCity);
 updateMenuUI();
 animate();
-
