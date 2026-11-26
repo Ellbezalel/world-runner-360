@@ -1,5 +1,5 @@
 // ==========================================
-// UI: MENUS, SHOP, CITIES & LEADERBOARDS
+// UI: MENUS, BIKE GARAGE, TRACKS & RANKS
 // ==========================================
 
 function createListCard(title, subtitle1, subtitle2, btnText, btnClass, onClickFn) {
@@ -38,7 +38,7 @@ function updateMenuUI() {
   document.getElementById('menu-coins').textContent = saveData.coins;
   document.getElementById('menu-naira').textContent = saveData.naira;
   const city = CITIES.find(c => c.id === saveData.selectedCity) || CITIES.at(0);
-  document.getElementById('menu-current-city').textContent = city.name;
+  document.getElementById('menu-current-city').textContent = city.name + ' (' + city.raceDist + 'm)';
 }
 
 function renderCities() {
@@ -48,13 +48,13 @@ function renderCities() {
   CITIES.forEach(city => {
     const unlocked = saveData.unlockedCities.includes(city.id);
     const selected = saveData.selectedCity === city.id;
-    const btnText = selected ? 'Equipped' : unlocked ? 'Select' : '🪙 ' + city.cost;
+    const btnText = selected ? 'Active Track' : unlocked ? 'Race Here' : '🪙 ' + city.cost;
     const btnClass = selected ? 'action-chip equipped' : unlocked ? 'action-chip' : 'action-chip locked';
 
     const card = createListCard(
       city.name,
       city.desc,
-      'Reward: ' + city.reward,
+      'Finish Distance: ' + city.raceDist + 'm • Trophy: ' + city.reward,
       btnText,
       btnClass,
       function() {
@@ -72,7 +72,7 @@ function renderCities() {
           persistSave();
           renderCities();
         } else {
-          alert('Not enough Coins! Watch an ad in the Shop or keep running.');
+          alert('Not enough Coins! Watch an ad in the Garage or win races.');
         }
       }
     );
@@ -96,7 +96,7 @@ function renderShop() {
 
     const btnText = equipped ? 'Equipped' : owned ? 'Equip' : icon + ' ' + item.cost;
     const btnClass = equipped ? 'action-chip equipped' : owned ? 'action-chip' : 'action-chip locked';
-    const subText = owned ? 'Unlocked in Wardrobe' : 'Unlock with ' + item.currency.toUpperCase();
+    const subText = owned ? 'Ready in Bike Garage' : 'Unlock with ' + item.currency.toUpperCase();
 
     const card = createListCard(
       item.name,
@@ -165,18 +165,21 @@ function renderLeaderboard(region) {
   const list = document.getElementById('leaderboard-list');
   list.innerHTML = '';
 
+  const currentTrackObj = CITIES.find(c => c.id === saveData.selectedCity) || CITIES.at(0);
+  const cleanTrackName = currentTrackObj.name.split(' (').at(0);
+
   const samplePlayers = Array.of(
-    { name: 'SavannaDash', city: 'Savanna Gate', pts: 18400 },
-    { name: 'HarborKing99', city: 'Eko Harbor', pts: 15200 },
-    { name: 'CitadelAce', city: 'Zuma Citadel', pts: 12900 },
-    { name: 'You (Runner)', city: saveData.selectedCity.replace('_', ' ').toUpperCase(), pts: saveData.highScore },
-    { name: 'NeoSprinter', city: 'Neo Circuit', pts: 7400 }
+    { name: 'Z-Bot Turbo', city: 'Apex Cyber-Core', pts: 18400 },
+    { name: 'Kira Volt', city: 'Neon Dockyard', pts: 15200 },
+    { name: 'ViaductAce', city: 'Skyrail Viaduct', pts: 12900 },
+    { name: 'You (Ace Rider)', city: cleanTrackName, pts: saveData.highScore },
+    { name: 'ScrapDrifter', city: 'Rustworks Yard', pts: 7400 }
   ).sort((a, b) => b.pts - a.pts);
 
   samplePlayers.forEach((p, idx) => {
     const card = createListCard(
       '#' + (idx + 1) + ' ' + p.name,
-      'Division: ' + selectedRegion + ' • Sector: ' + p.city,
+      'Division: ' + selectedRegion + ' • Home Track: ' + p.city,
       null,
       p.pts.toLocaleString() + ' pts',
       'action-chip equipped',

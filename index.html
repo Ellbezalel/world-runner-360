@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0b2545" />
-  <title>World Runner 360</title>
+  <title>World Runner 360 — Bike Race</title>
 
   <!-- Capture Chrome Install Prompt Before Heavy Scripts Load -->
   <script>
@@ -37,15 +37,15 @@
 
       <h1 class="install-heading">Download World Runner 360 App</h1>
       <p class="install-subheading">
-        Run Across Fictional Cities. Unlock Outfits &amp; Power-Ups. Play Anywhere with Confidence.
+        3D Bike &amp; Moto Racing. Hit Ramps, Boost Zones &amp; Beat Rivals Offline.
       </p>
 
       <div class="install-features-card">
         <ul>
           <li><span>✅</span> Free Forever</li>
           <li><span>📴</span> Works Offline</li>
-          <li><span>🌍</span> 9+ Fictional Cities &amp; Outfits</li>
-          <li><span>🎮</span> Smooth 3D Endless Runner</li>
+          <li><span>🏍️</span> 3D Bike Races &amp; AI Rivals</li>
+          <li><span>🚀</span> Jump Ramps, Boost Zones &amp; 360 Flips</li>
           <li><span>⚡</span> Fast and Light - Works on any phone</li>
         </ul>
       </div>
@@ -78,10 +78,10 @@
     <div class="privacy-inner">
       <h1>Privacy Policy for World Runner 360</h1>
       <p>Last updated: November 2026</p>
-      <p>World Runner 360 is a free-to-play 3D endless runner game built by <strong>Eleazar Alhaji Maaji</strong>. We respect your privacy and keep data collection minimal.</p>
+      <p>World Runner 360 is a free-to-play 3D bike racing game built by <strong>Eleazar Alhaji Maaji</strong>. We respect your privacy and keep data collection minimal.</p>
 
       <h2>1. Game Progress Storage</h2>
-      <p>Your coins, unlocked fictional cities, outfits, and mission progress are saved locally on your device using browser storage so you can play offline anytime.</p>
+      <p>Your coins, unlocked tracks, bikes, and mission progress are saved locally on your device using browser storage so you can race offline anytime.</p>
 
       <h2>2. Third-Party Advertising</h2>
       <p>We display rewarded and in-game advertisements through third-party ad networks (such as Adsterra) to keep the game free to play. Ad partners may use standard cookies or non-personal device signals to deliver relevant ads.</p>
@@ -97,11 +97,11 @@
     <button id="btn-close-privacy">← Back to Game</button>
   </div>
 
-  <!-- In-Game HUD -->
+  <!-- In-Game Race HUD -->
   <div id="hud" class="hidden">
     <div class="hud-top">
-      <div class="stat-pill"><span class="label">SCORE</span><span id="hud-score">0</span></div>
-      <div class="stat-pill"><span class="label">DIST</span><span id="hud-dist">0m</span></div>
+      <div class="stat-pill"><span class="label">POS</span><span id="hud-pos" style="color:#facc15;font-weight:900;">1st/3</span></div>
+      <div class="stat-pill"><span class="label">DIST</span><span id="hud-dist">0/750m</span></div>
       <div class="stat-pill coin-pill">
         <span>🪙 <b id="hud-coins">50</b></span>
         <span>💵 <b id="hud-naira">2</b></span>
@@ -110,14 +110,15 @@
     </div>
 
     <div class="hud-sub">
-      <span id="hud-city-badge">📍 Savanna Gate</span>
-      <span id="hud-zobo-badge" class="hidden">🍷 Extra Life Ready</span>
+      <span id="hud-city-badge">🏁 Rustworks Yard</span>
+      <span id="hud-score-badge" style="background:rgba(56,189,248,0.9);color:#0f172a;font-weight:800;font-size:12px;padding:4px 10px;border-radius:8px;">SCORE: 0</span>
+      <span id="hud-zobo-badge" class="hidden">🛡️ Extra Shield</span>
     </div>
 
     <div id="powerup-bars"></div>
 
     <button id="btn-spin-action" class="spin-btn">
-      🌀 360 SPIN <small>(E / Double-Tap)</small>
+      🌀 360 BIKE FLIP <small>(E / Double-Tap)</small>
     </button>
   </div>
 
@@ -129,25 +130,25 @@
         <span>💵 <b id="menu-naira">2</b></span>
       </div>
       <h1 class="game-title">WORLD RUNNER <span>360</span></h1>
-      <p class="tagline">"You run. Your city runs with you." 🌍🏃💨</p>
+      <p class="tagline">"Hit Ramps. Boost Past Rivals. Own the Track." 🚲🔥💨</p>
 
       <div class="selected-city-box">
-        <span>Current City:</span>
-        <strong id="menu-current-city">Savanna Gate (Starter)</strong>
+        <span>Selected Track:</span>
+        <strong id="menu-current-city">Rustworks Yard (Track 1) (750m)</strong>
       </div>
 
-      <button id="btn-play" class="primary-btn">▶ PLAY NOW</button>
+      <button id="btn-play" class="primary-btn">🏁 START RACE</button>
 
       <div class="nav-grid">
-        <button class="nav-btn" data-modal="modal-cities">🌍 Cities</button>
-        <button class="nav-btn" data-modal="modal-shop">👕 Shop</button>
+        <button class="nav-btn" data-modal="modal-cities">🌍 Tracks</button>
+        <button class="nav-btn" data-modal="modal-shop">🚲 Garage</button>
         <button class="nav-btn" data-modal="modal-missions">🎯 Missions</button>
         <button class="nav-btn" data-modal="modal-leaderboard">🏆 Ranks</button>
       </div>
 
       <p class="controls-hint">
-        📱 <b>Android:</b> Swipe Left/Right/Up/Down • Double-Tap to Spin<br />
-        💻 <b>PC:</b> Arrow Keys or WASD • Press <b>E</b> for 360 Spin
+        📱 <b>Android:</b> Swipe Left/Right/Up/Down • Double-Tap for 360 Flip<br />
+        💻 <b>PC:</b> Arrow Keys or WASD • Press <b>E</b> for 360 Flip
       </p>
       <p class="privacy-link">
         Built by <b>Eleazar Alhaji Maaji</b> • <a href="#" id="btn-open-privacy">Privacy Policy</a>
@@ -155,31 +156,31 @@
     </div>
   </div>
 
-  <!-- Cities Modal -->
+  <!-- Tracks Modal -->
   <div id="modal-cities" class="overlay modal hidden">
     <div class="menu-card modal-card">
       <div class="modal-header">
-        <h2>🌍 City Progression</h2>
+        <h2>🌍 Race Tracks</h2>
         <button class="close-modal">✖</button>
       </div>
       <div id="cities-list" class="scroll-list"></div>
     </div>
   </div>
 
-  <!-- Shop Modal -->
+  <!-- Bike Garage Modal -->
   <div id="modal-shop" class="overlay modal hidden">
     <div class="menu-card modal-card">
       <div class="modal-header">
-        <h2>👕 Customization Shop</h2>
+        <h2>🚲 Bike Garage</h2>
         <button class="close-modal">✖</button>
       </div>
       <button id="btn-ad-coins" class="secondary-btn ad-btn">
         🎬 Watch Ad for +50 Free Coins
       </button>
       <div class="shop-tabs">
-        <button class="tab-btn active" data-tab="outfits">Outfits</button>
-        <button class="tab-btn" data-tab="shoes">Shoes</button>
-        <button class="tab-btn" data-tab="trails">Trails</button>
+        <button class="tab-btn active" data-tab="outfits">Bikes</button>
+        <button class="tab-btn" data-tab="shoes">Rims</button>
+        <button class="tab-btn" data-tab="trails">Nitro</button>
       </div>
       <div id="shop-list" class="scroll-list"></div>
     </div>
@@ -189,7 +190,7 @@
   <div id="modal-missions" class="overlay modal hidden">
     <div class="menu-card modal-card">
       <div class="modal-header">
-        <h2>🎯 Daily Missions</h2>
+        <h2>🎯 Daily Race Missions</h2>
         <button class="close-modal">✖</button>
       </div>
       <div id="missions-list" class="scroll-list"></div>
@@ -200,52 +201,43 @@
   <div id="modal-leaderboard" class="overlay modal hidden">
     <div class="menu-card modal-card">
       <div class="modal-header">
-        <h2>🏆 Sector vs. Sector Ranks</h2>
+        <h2>🏆 Championship Ranks</h2>
         <button class="close-modal">✖</button>
       </div>
       <div class="rivalry-box">
-        <div class="rivalry-title">🔥 Weekly Battle: Eko Harbor vs Zuma Citadel</div>
+        <div class="rivalry-title">🔥 Weekly Rivalry: Neon Dockyard vs Skyrail Viaduct</div>
         <div class="rivalry-bar">
-          <div id="lagos-bar" style="width: 54%">Eko Harbor 54%</div>
-          <div id="abuja-bar" style="width: 46%">Zuma Citadel 46%</div>
+          <div id="lagos-bar" style="width: 54%">Neon Dock 54%</div>
+          <div id="abuja-bar" style="width: 46%">Skyrail 46%</div>
         </div>
       </div>
       <div class="shop-tabs">
         <button class="lb-tab active" data-region="World">World</button>
-        <button class="lb-tab" data-region="Savanna Gate">Savanna</button>
-        <button class="lb-tab" data-region="Eko Harbor">Eko Harbor</button>
-        <button class="lb-tab" data-region="Zuma Citadel">Zuma</button>
-        <button class="lb-tab" data-region="Neo Circuit">Neo Circuit</button>
+        <button class="lb-tab" data-region="Rustworks Yard">Rustworks</button>
+        <button class="lb-tab" data-region="Neon Dockyard">Dockyard</button>
+        <button class="lb-tab" data-region="Skyrail Viaduct">Skyrail</button>
+        <button class="lb-tab" data-region="Apex Cyber-Core">Cyber-Core</button>
       </div>
       <div id="leaderboard-list" class="scroll-list"></div>
     </div>
   </div>
 
-  <!-- Game Over Screen -->
+  <!-- Race Results / Crash Screen -->
   <div id="gameover-menu" class="overlay hidden">
     <div class="menu-card">
-      <h2>💥 CRASHED!</h2>
-      <p id="gameover-city" class="tagline">City: Savanna Gate</p>
+      <h2 id="gameover-title">💥 WIPED OUT!</h2>
+      <p id="gameover-city" class="tagline">Track: Rustworks Yard</p>
       <div class="summary-grid">
         <div><span>Score</span><b id="end-score">0</b></div>
         <div><span>Distance</span><b id="end-dist">0m</b></div>
         <div><span>Coins Earned</span><b id="end-coins">+0</b></div>
         <div><span>Naira Notes</span><b id="end-naira">+0</b></div>
       </div>
-      <button id="btn-revive-ad" class="secondary-btn ad-btn">🎬 Watch Ad to Revive (Free)</button>
-      <button id="btn-revive-naira" class="secondary-btn">💵 Revive Now (5 Naira Notes)</button>
-      <button id="btn-restart" class="primary-btn">🔄 RUN AGAIN</button>
+      <button id="btn-revive-ad" class="secondary-btn ad-btn">🎬 Watch Ad to Continue Race (Free)</button>
+      <button id="btn-revive-naira" class="secondary-btn">💵 Continue Now (5 Naira Notes)</button>
+      <button id="btn-restart" class="primary-btn">🔄 RACE AGAIN</button>
       <button id="btn-home" class="nav-btn" style="width: 100%; margin-top: 8px;">🏠 Main Menu</button>
     </div>
   </div>
 
   <!-- Load Modular Scripts in Exact Order -->
-  <script src="js/data.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/ads.js"></script>
-  <script src="js/install.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/game.js"></script>
-</body>
-</html>
