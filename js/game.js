@@ -1,3 +1,4 @@
+
 // ==========================================
 // GAME ENGINE: 3D BIKE RACE, AI RIVALS & RAMPS
 // ==========================================
@@ -113,7 +114,7 @@ function createRacerAssembly(opts) {
 
   root.add(head, visor, beanie);
 
-  Array.of(-0.28, 0.28).forEach(xSide => {
+  Array.of(-0.28, 0.28).forEach(function(xSide) {
     const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.58, 8), jacketMat);
     arm.position.set(xSide, 1.42, -0.24);
     arm.rotation.x = -1.05;
@@ -133,8 +134,8 @@ function buildPlayerModel() {
     playerGroup.remove(playerGroup.children.at(0));
   }
 
-  const bike = SHOP_ITEMS.outfits.find(o => o.id === saveData.equippedOutfit) || SHOP_ITEMS.outfits.at(0);
-  const rims = SHOP_ITEMS.shoes.find(s => s.id === saveData.equippedShoes) || SHOP_ITEMS.shoes.at(0);
+  const bike = SHOP_ITEMS.outfits.find(function(o) { return o.id === saveData.equippedOutfit; }) || SHOP_ITEMS.outfits.at(0);
+  const rims = SHOP_ITEMS.shoes.find(function(s) { return s.id === saveData.equippedShoes; }) || SHOP_ITEMS.shoes.at(0);
 
   const assembly = createRacerAssembly({
     bikeColor: bike.color,
@@ -161,7 +162,7 @@ function buildPlayerModel() {
 }
 
 function spawnAIRivals() {
-  aiRivals.forEach(r => scene.remove(r.group));
+  aiRivals.forEach(function(r) { scene.remove(r.group); });
   aiRivals = Array.of();
 
   const kira = createRacerAssembly({
@@ -210,7 +211,7 @@ function spawnAIRivals() {
 }
 
 function setupCityEnvironment(cityId) {
-  const city = CITIES.find(c => c.id === cityId) || CITIES.at(0);
+  const city = CITIES.find(function(c) { return c.id === cityId; }) || CITIES.at(0);
   scene.background = new THREE.Color(city.sky);
   scene.fog = new THREE.Fog(city.sky, 40, 140);
 
@@ -283,7 +284,7 @@ function setupCityEnvironment(cityId) {
     propGroup.add(bMesh);
 
     for (let wy = 2.5; wy < h - 1.5; wy += 2.4) {
-      const win = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.85, d * 0.72), winMat);
+const win = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.85, d * 0.72), winMat);
 win.position.set(bMesh.position.x - side * (w / 2 + 0.02), wy, 0);
 propGroup.add(win);
 }
@@ -369,9 +370,9 @@ jollof: 0,
 zobo: false
 };
 function clearEntities() {
-obstacles.forEach(o => scene.remove(o.mesh));
-collectibles.forEach(c => scene.remove(c.mesh));
-trailParticles.forEach(t => scene.remove(t.mesh));
+obstacles.forEach(function(o) { scene.remove(o.mesh); });
+collectibles.forEach(function(c) { scene.remove(c.mesh); });
+trailParticles.forEach(function(t) { scene.remove(t.mesh); });
 obstacles = Array.of();
 collectibles = Array.of();
 trailParticles = Array.of();
@@ -391,7 +392,8 @@ stripe.position.set(0, 0.82, 0);
 stripe.rotation.x = 0.28;
 group.add(base, stripe);
 return { mesh: group, kind: 'ramp' };
-} else if (type === 'boost') {
+}
+if (type === 'boost') {
 const pad = new THREE.Mesh(
 new THREE.BoxGeometry(2.1, 0.08, 4.2),
 new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
@@ -404,7 +406,8 @@ new THREE.MeshBasicMaterial({ color: 0xe0f2fe })
 core.position.y = 0.05;
 group.add(pad, core);
 return { mesh: group, kind: 'boost' };
-} else if (type === 'spikes') {
+}
+if (type === 'spikes') {
 const plate = new THREE.Mesh(
 new THREE.BoxGeometry(2.0, 0.14, 1.4),
 new THREE.MeshLambertMaterial({ color: 0x334155 })
@@ -418,7 +421,8 @@ cone.position.set(sx, 0.42, 0);
 group.add(cone);
 }
 return { mesh: group, kind: 'low' };
-} else if (type === 'high') {
+}
+if (type === 'high') {
 const pMat = new THREE.MeshLambertMaterial({ color: 0x475569 });
 const p1 = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 2.8, 10), pMat);
 p1.position.set(-1.05, 1.4, 0);
@@ -431,7 +435,7 @@ new THREE.MeshLambertMaterial({ color: 0xef4444 })
 beam.position.y = 2.05;
 group.add(p1, p2, beam);
 return { mesh: group, kind: 'high' };
-} else {
+}
 const postMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
 const leg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.95, 8), postMat);
 leg1.position.set(-0.85, 0.48, 0);
@@ -449,7 +453,6 @@ new THREE.MeshBasicMaterial({ color: 0xf8fafc })
 stripe.position.y = 0.72;
 group.add(leg1, leg2, board, stripe);
 return { mesh: group, kind: 'low' };
-}
 }
 function createCollectibleMesh(type) {
 const group = new THREE.Group();
@@ -525,7 +528,7 @@ const obs = createObstacleMesh(chosenType);
 obs.mesh.position.set(LANES.at(blockedLane), 0, zPos);
 scene.add(obs.mesh);
 obstacles.push({ mesh: obs.mesh, kind: obs.kind, lane: blockedLane });
-const freeLanes = Array.of(0, 1, 2).filter(l => l !== blockedLane);
+const freeLanes = Array.of(0, 1, 2).filter(function(l) { return l !== blockedLane; });
 const coinLane = freeLanes.at(Math.floor(Math.random() * freeLanes.length));
 const roll = Math.random();
 if (roll < 0.08) {
@@ -614,7 +617,7 @@ else slide();
 }, { passive: true });
 function getCurrentRaceRank() {
 let rivalsAhead = 0;
-aiRivals.forEach(r => {
+aiRivals.forEach(function(r) {
 if (r.z < playerGroup.position.z) rivalsAhead++;
 });
 return rivalsAhead + 1;
@@ -642,7 +645,7 @@ distance = 0;
 runCoins = 0;
 runNaira = 0;
 activePowerups = { shield: 0, suya: 0, magnet: 0, jollof: 0, zobo: false };
-const cityObj = CITIES.find(c => c.id === saveData.selectedCity) || CITIES.at(0);
+const cityObj = CITIES.find(function(c) { return c.id === saveData.selectedCity; }) || CITIES.at(0);
 document.getElementById('hud-city-badge').textContent = '🏁 ' + cityObj.name;
 document.getElementById('hud-zobo-badge').classList.add('hidden');
 document.getElementById('btn-revive-ad').classList.remove('hidden');
@@ -652,6 +655,11 @@ document.getElementById('gameover-menu').classList.add('hidden');
 document.getElementById('hud').classList.remove('hidden');
 isPlaying = true;
 }
+window.startGame = startGame;
+window.trigger360Spin = trigger360Spin;
+window.clearEntities = clearEntities;
+window.buildPlayerModel = buildPlayerModel;
+window.setupCityEnvironment = setupCityEnvironment;
 function handleRaceFinish(rank) {
 isPlaying = false;
 playSound('powerup');
@@ -663,7 +671,7 @@ saveData.naira += runNaira;
 if (Math.floor(score) > saveData.highScore) saveData.highScore = Math.floor(score);
 trackMission('dist_360', Math.floor(distance), true);
 persistSave();
-const cityObj = CITIES.find(c => c.id === saveData.selectedCity) || CITIES.at(0);
+const cityObj = CITIES.find(function(c) { return c.id === saveData.selectedCity; }) || CITIES.at(0);
 const placeLabel = rank === 1 ? '🏆 1st PLACE VICTORY!' : rank === 2 ? '🥈 2nd PLACE FINISH!' : '🥉 3rd PLACE FINISH!';
 document.getElementById('gameover-title').textContent = placeLabel;
 document.getElementById('gameover-city').textContent = 'Track: ' + cityObj.name + ' (+' + prizeCoins + ' Win Bonus)';
@@ -694,7 +702,7 @@ saveData.naira += runNaira;
 if (Math.floor(score) > saveData.highScore) saveData.highScore = Math.floor(score);
 trackMission('dist_360', Math.floor(distance), true);
 persistSave();
-const cityObj = CITIES.find(c => c.id === saveData.selectedCity) || CITIES.at(0);
+const cityObj = CITIES.find(function(c) { return c.id === saveData.selectedCity; }) || CITIES.at(0);
 document.getElementById('gameover-title').textContent = '💥 WIPED OUT!';
 document.getElementById('gameover-city').textContent = 'Track: ' + cityObj.name + ' (Pos: ' + formatRankText(getCurrentRaceRank()) + ')';
 document.getElementById('end-score').textContent = Math.floor(score);
@@ -718,7 +726,7 @@ const list = Array.of(
 { key: 'magnet', label: '🧲 Coin Magnet', max: 8 },
 { key: 'jollof', label: '🔥 Overdrive Jet', max: 10 }
 );
-list.forEach(item => {
+list.forEach(function(item) {
 const val = activePowerups[item.key];
 if (val > 0) {
 const pct = Math.max(0, Math.min(100, (val / item.max) * 100));
@@ -743,7 +751,7 @@ function animate() {
 requestAnimationFrame(animate);
 const delta = Math.min(clock.getDelta(), 0.05);
 if (isPlaying) {
-const cityObj = CITIES.find(c => c.id === saveData.selectedCity) || CITIES.at(0);
+const cityObj = CITIES.find(function(c) { return c.id === saveData.selectedCity; }) || CITIES.at(0);
 const speedMult = activePowerups.jollof > 0 ? 1.75 : activePowerups.suya > 0 ? 1.42 : 1.0;
 const currentSpeed = gameSpeed * speedMult;
 gameSpeed = Math.min(46, gameSpeed + delta * 0.35);
@@ -796,7 +804,7 @@ spinTimer -= delta;
 playerGroup.rotation.y += delta * 22;
 if (spinTimer <= 0) playerGroup.rotation.y = 0;
 }
-aiRivals.forEach(rival => {
+aiRivals.forEach(function(rival) {
 rival.aiTimer -= delta;
 if (rival.aiTimer <= 0) {
 rival.aiTimer = 0.8 + Math.random() * 1.1;
@@ -815,7 +823,7 @@ rival.group.position.z = rival.z;
 rival.group.rotation.z = (rival.group.position.x - rTargetX) * 0.2;
 rival.frontWheel.rotation.x -= rivalSpeed * delta * 0.8;
 rival.rearWheel.rotation.x -= rivalSpeed * delta * 0.8;
-obstacles.forEach(obs => {
+obstacles.forEach(function(obs) {
 if (obs.lane === rival.lane && Math.abs(obs.mesh.position.z - rival.z) < 4.5 && rival.group.position.y === 0) {
 rival.vy = 13.5;
 }
@@ -829,12 +837,12 @@ rival.vy = 0;
 }
 }
 });
-Array.of('shield', 'suya', 'magnet', 'jollof').forEach(k => {
+Array.of('shield', 'suya', 'magnet', 'jollof').forEach(function(k) {
 if (activePowerups[k] > 0) activePowerups[k] = Math.max(0, activePowerups[k] - delta);
 });
 shieldBubble.visible = activePowerups.shield > 0 || activePowerups.jollof > 0;
 updatePowerupHUD();
-const trailObj = SHOP_ITEMS.trails.find(t => t.id === saveData.equippedTrail);
+const trailObj = SHOP_ITEMS.trails.find(function(t) { return t.id === saveData.equippedTrail; });
 if (trailObj && trailObj.color && Math.random() < 0.6) {
 const tMesh = new THREE.Mesh(
 new THREE.SphereGeometry(0.16, 8, 8),
@@ -856,11 +864,11 @@ scene.remove(tp.mesh);
 trailParticles.splice(i, 1);
 }
 }
-sceneryGroup.children.forEach(b => {
+sceneryGroup.children.forEach(function(b) {
 b.position.z += currentSpeed * delta;
 if (b.position.z > 15) b.position.z -= 288;
 });
-roadLinesGroup.children.forEach(line => {
+roadLinesGroup.children.forEach(function(line) {
 if (line.geometry.type === 'PlaneGeometry') {
 line.position.z += currentSpeed * delta;
 if (line.position.z > 12) line.position.z -= 270;
@@ -984,10 +992,6 @@ camera.aspect = window.innerWidth / window.innerHeight;
 camera.updateProjectionMatrix();
 renderer.setSize(window.innerWidth, window.innerHeight);
 });
-try {
 buildPlayerModel();
 setupCityEnvironment(saveData.selectedCity);
-animate();
-} catch (err) {
-console.error('3D Engine Boot Notice:', err);
-}
+animate()
