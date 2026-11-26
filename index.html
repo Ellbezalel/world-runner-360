@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#0b2545" />
   <title>World Runner 360 — Bike Race</title>
 
-  <!-- Automatically hide install screen when launched as an installed app -->
   <style>
     @media all and (display-mode: standalone) {
       #install-screen {
@@ -15,12 +14,13 @@
     }
   </style>
 
-  <!-- Capture Chrome Install Prompt Before Heavy Scripts Load -->
+  <!-- Capture Chrome Install Prompt Immediately -->
   <script>
     window.deferredPWA = null;
     window.addEventListener('beforeinstallprompt', function(e) {
       e.preventDefault();
       window.deferredPWA = e;
+      if (window.onPWAReady) window.onPWAReady(e);
     });
   </script>
 
@@ -33,7 +33,7 @@
 <body>
   <div id="game-container"></div>
 
-  <!-- Full-Screen Chrome PWA Install Page (Hides automatically once installed) -->
+  <!-- Full-Screen Chrome PWA Install Page -->
   <div id="install-screen">
     <div class="install-container">
       <img src="icon-512.png" alt="World Runner 360" class="install-app-icon" />
@@ -53,7 +53,7 @@
         </ul>
       </div>
 
-      <button id="btn-install-app" class="install-gold-btn" onclick="if(window.deferredPWA){window.deferredPWA.prompt();}else{this.textContent='📲 Tap Browser Menu (⋮) → Install App';}">
+      <button id="btn-install-app" class="install-gold-btn">
         📲 Install World Runner 360 App
       </button>
 
@@ -61,13 +61,13 @@
       <p class="install-note">Tap the button above to install World Runner 360</p>
       <p class="install-rating">⭐⭐⭐⭐⭐ 4.9 • Loved by players in Gombe &amp; Nigeria</p>
 
-      <button id="btn-skip-install" class="install-web-btn" onclick="document.getElementById('install-screen').classList.add('hidden');">
+      <button id="btn-skip-install" class="install-web-btn">
         Continue on Website →
       </button>
     </div>
   </div>
 
-  <!-- In-App Rewarded Ad Overlay (Top-Right X appears after 5 seconds) -->
+  <!-- In-App Rewarded Ad Overlay -->
   <div id="ad-modal" class="hidden">
     <div class="ad-top-bar">
       <span id="ad-timer-text">⏳ Reward ready in 5s...</span>
@@ -76,7 +76,7 @@
     <iframe id="ad-iframe" src="about:blank" title="Advertisement"></iframe>
   </div>
 
-  <!-- In-App Privacy Policy Overlay (Bottom-Left Back to Game button) -->
+  <!-- In-App Privacy Policy Overlay -->
   <div id="privacy-modal" class="hidden">
     <div class="privacy-inner">
       <h1>Privacy Policy for World Runner 360</h1>
@@ -239,3 +239,13 @@
       <button id="btn-revive-ad" class="secondary-btn ad-btn">🎬 Watch Ad to Continue Race (Free)</button>
       <button id="btn-revive-naira" class="secondary-btn">💵 Continue Now (5 Naira Notes)</button>
       <button id="btn-restart" class="primary-btn">🔄 RACE AGAIN</button>
+      <button id="btn-home" class="nav-btn" style="width: 100%; margin-top: 8px;">🏠 Main Menu</button>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/ads.js"></script>
+  <script src="js/install.js"></script>
+  <script src="js/ui.js"></script>
