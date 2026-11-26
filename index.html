@@ -53,12 +53,16 @@
       <button id="btn-install-app" class="install-gold-btn">
         📲 Install World Runner 360 App
       </button>
+      
+      <button id="btn-install-app" class="install-gold-btn" onclick="if(window.deferredPWA){window.deferredPWA.prompt();}else{this.textContent='📲 Tap Chrome Menu (⋮) → Install App';}">
+        📲 Install World Runner 360 App
+      </button>
 
       <p class="install-note">Install World Runner 360 for offline play and faster access.</p>
       <p class="install-note">Tap the button above to install World Runner 360</p>
       <p class="install-rating">⭐⭐⭐⭐⭐ 4.9 • Loved by players in Gombe &amp; Nigeria</p>
 
-      <button id="btn-skip-install" class="install-web-btn">
+      <button id="btn-skip-install" class="install-web-btn" onclick="document.getElementById('install-screen').classList.add('hidden');">
         Continue on Website →
       </button>
     </div>

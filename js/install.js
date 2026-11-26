@@ -14,73 +14,51 @@ function isRunningStandalone() {
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }
 
-function showInstallScreen() {
+window.addEventListener('appinstalled', function() {
+  window.deferredPWA = null;
+  localStorage.setItem('wr360_installed', 'true');
   const screen = document.getElementById('install-screen');
-  if (screen) screen.classList.remove('hidden');
+  if (screen) screen.classList.add('hidden');
+});
+
+function handleInstallClick() {
+  const screen = document.getElementById('install-screen');
+  const installBtn = document.getElementById('btn-install-app');
+
+  if (window.deferredPWA) {
+    window.deferredPWA.prompt();
+    window.deferredPWA.userChoice.then(function(choice) {
+      if (choice.outcome === 'accepted') {
+        localStorage.setItem('wr360_installed', 'true');
+        if (screen) screen.classList.add('hidden');
+      }
+      window.deferredPWA = null;
+    });
+  } else if (installBtn) {
+    installBtn.textContent = '📲 Tap Chrome Menu (⋮) → Install App';
+  }
 }
 
-function hideInstallScreen() {
+function handleSkipInstallClick() {
   const screen = document.getElementById('install-screen');
   if (screen) screen.classList.add('hidden');
 }
 
-window.addEventListener('beforeinstallprompt', function(e) {
-  e.preventDefault();
-  window.deferredPWA = e;
-  localStorage.removeItem('wr360_installed');
-  if (!isRunningStandalone()) {
-    showInstallScreen();
-  }
-});
-
-window.addEventListener('appinstalled', function() {
-  window.deferredPWA = null;
-  localStorage.setItem('wr360_installed', 'true');
-  hideInstallScreen();
-});
-
 document.addEventListener('DOMContentLoaded', function() {
+  const screen = document.getElementById('install-screen');
   const alreadyInstalled = localStorage.getItem('wr360_installed') === 'true';
 
-  if (isRunningStandalone() || alreadyInstalled) {
-    hideInstallScreen();
-  } else {
-    showInstallScreen();
+  if (screen) {
+    if (isRunningStandalone() || alreadyInstalled) {
+      screen.classList.add('hidden');
+    } else {
+      screen.classList.remove('hidden');
+    }
   }
 
   const installBtn = document.getElementById('btn-install-app');
   const skipBtn = document.getElementById('btn-skip-install');
 
-  if (installBtn) {
-    installBtn.onclick = async function() {
-      if (window.deferredPWA) {
-        window.deferredPWA.prompt();
-        const choice = await window.deferredPWA.userChoice;
-        if (choice.outcome === 'accepted') {
-          localStorage.setItem('wr360_installed', 'true');
-          hideInstallScreen();
-        }
-        window.deferredPWA = null;
-      } else {
-        installBtn.dataset.waiting = 'true';
-        installBtn.textContent = '⏳ Preparing Installer...';
-        setTimeout(function() {
-          if (window.deferredPWA) {
-            installBtn.dataset.waiting = 'false';
-            installBtn.textContent = '📲 Install World Runner 360 App';
-            window.deferredPWA.prompt();
-          } else {
-            installBtn.dataset.waiting = 'false';
-            installBtn.textContent = '📲 Tap Chrome Menu (⋮) → Install App';
-          }
-        }, 2500);
-      }
-    };
-  }
-
-  if (skipBtn) {
-    skipBtn.onclick = function() {
-      hideInstallScreen();
-    };
-  }
+  if (installBtn) installBtn.onclick = handleInstallClick;
+  if (skipBtn) skipBtn.onclick = handleSkipInstallClick;
 });
