@@ -2,94 +2,13 @@
 // GAME ENGINE: 3D BIKE RACE, AI RIVALS & RAMPS
 // ==========================================
 
-// 1. Bind ALL UI & Menu Buttons Immediately (Before 3D Engine Boots)
-document.addEventListener('DOMContentLoaded', function() {
-  const playBtn = document.getElementById('btn-play');
-  const restartBtn = document.getElementById('btn-restart');
-  const homeBtn = document.getElementById('btn-home');
-  const reviveNairaBtn = document.getElementById('btn-revive-naira');
-  const muteBtn = document.getElementById('btn-mute');
-  const spinBtn = document.getElementById('btn-spin-action');
-
-  if (playBtn) playBtn.addEventListener('click', startGame);
-  if (restartBtn) restartBtn.addEventListener('click', startGame);
-  if (spinBtn) spinBtn.addEventListener('click', trigger360Spin);
-
-  if (homeBtn) {
-    homeBtn.addEventListener('click', function() {
-      document.getElementById('gameover-menu').classList.add('hidden');
-      document.getElementById('main-menu').classList.remove('hidden');
-    });
-  }
-
-  if (reviveNairaBtn) {
-    reviveNairaBtn.addEventListener('click', function() {
-      if (saveData.naira >= 5) {
-        saveData.naira -= 5;
-        persistSave();
-        clearEntities();
-        document.getElementById('gameover-menu').classList.add('hidden');
-        document.getElementById('hud').classList.remove('hidden');
-        isPlaying = true;
-        playSound('powerup');
-      } else {
-        alert('You need 5 Naira Notes to continue!');
-      }
-    });
-  }
-
-  if (muteBtn) {
-    muteBtn.addEventListener('click', function(e) {
-      isMuted = !isMuted;
-      e.target.textContent = isMuted ? '🔇' : '🔊';
-    });
-  }
-
-  document.querySelectorAll('.nav-btn[data-modal]').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const modalId = btn.getAttribute('data-modal');
-      const modalEl = document.getElementById(modalId);
-      if (modalEl) modalEl.classList.remove('hidden');
-      if (modalId === 'modal-cities') renderCities();
-      if (modalId === 'modal-shop') renderShop();
-      if (modalId === 'modal-missions') renderMissions();
-      if (modalId === 'modal-leaderboard') renderLeaderboard('World');
-    });
-  });
-
-  document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const m = btn.closest('.modal');
-      if (m) m.classList.add('hidden');
-    });
-  });
-
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeShopTab = btn.getAttribute('data-tab');
-      renderShop();
-    });
-  });
-
-  document.querySelectorAll('.lb-tab').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.lb-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderLeaderboard(btn.getAttribute('data-region'));
-    });
-  });
-});
-
-// 2. Initialize Three.js 3D Scene
 const container = document.getElementById('game-container');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 220);
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-container.appendChild(renderer.domElement);
+if (container) container.appendChild(renderer.domElement);
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.78);
 scene.add(ambientLight);
@@ -278,81 +197,93 @@ function spawnAIRivals() {
   zbot.group.position.set(LANES.at(2), 0, -9);
   scene.add(zbot.group);
   aiRivals.push({
-name: 'Z-Bot',
-group: zbot.group,
-frontWheel: zbot.frontWheel,
-rearWheel: zbot.rearWheel,
-lane: 2,
-z: -9,
-vy: 0,
-speedOffset: 0.8,
-aiTimer: 0.9
-});
+    name: 'Z-Bot',
+    group: zbot.group,
+    frontWheel: zbot.frontWheel,
+    rearWheel: zbot.rearWheel,
+    lane: 2,
+    z: -9,
+    vy: 0,
+    speedOffset: 0.8,
+    aiTimer: 0.9
+  });
 }
+
 function setupCityEnvironment(cityId) {
-const city = CITIES.find(c => c.id === cityId) || CITIES.at(0);
-scene.background = new THREE.Color(city.sky);
-scene.fog = new THREE.Fog(city.sky, 40, 140);
-if (roadMesh) scene.remove(roadMesh);
-if (groundMesh) scene.remove(groundMesh);
-if (sceneryGroup) scene.remove(sceneryGroup);
-if (roadLinesGroup) scene.remove(roadLinesGroup);
-if (weatherParticles) scene.remove(weatherParticles);
-if (finishArch) {
-scene.remove(finishArch);
-finishArch = null;
-}
-roadMesh = new THREE.Mesh(
-new THREE.PlaneGeometry(9.4, 300),
-new THREE.MeshLambertMaterial({ color: city.road })
-);
-roadMesh.rotation.x = -Math.PI / 2;
-roadMesh.position.z = -100;
-scene.add(roadMesh);
-roadLinesGroup = new THREE.Group();
-const curbMat = new THREE.MeshLambertMaterial({ color: 0x475569 });
-const leftCurb = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.3, 300), curbMat);
-leftCurb.position.set(-5.3, 0.15, -100);
-const rightCurb = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.3, 300), curbMat);
-rightCurb.position.set(5.3, 0.15, -100);
-roadLinesGroup.add(leftCurb, rightCurb);
-const lineMat = new THREE.MeshBasicMaterial({ color: city.neon });
-for (let z = 10; z > -260; z -= 6) {
-const l1 = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 2.8), lineMat);
-l1.rotation.x = -Math.PI / 2;
-l1.position.set(-1.3, 0.02, z);
-const l2 = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 2.8), lineMat);
-l2.rotation.x = -Math.PI / 2;
-l2.position.set(1.3, 0.02, z);
-roadLinesGroup.add(l1, l2);
-}
-scene.add(roadLinesGroup);
-groundMesh = new THREE.Mesh(
-new THREE.PlaneGeometry(180, 300),
-new THREE.MeshLambertMaterial({ color: city.ground })
-);
-groundMesh.rotation.x = -Math.PI / 2;
-groundMesh.position.set(0, -0.05, -100);
-scene.add(groundMesh);
-sceneryGroup = new THREE.Group();
-const winMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
-const neonMat = new THREE.MeshBasicMaterial({ color: city.neon });
-const trussMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
-for (let i = 0; i < 36; i++) {
-const side = i % 2 === 0 ? -1 : 1;
-const propGroup = new THREE.Group();
-propGroup.position.z = -i * 8;
-const w = 4.5 + Math.random() * 2.5;
-const h = 7 + Math.random() * 16;
-const d = 5.4;
-const bMesh = new THREE.Mesh(
-new THREE.BoxGeometry(w, h, d),
-new THREE.MeshLambertMaterial({ color: city.building })
-);
-bMesh.position.set(side * (9.8 + Math.random() * 2.5), h / 2, 0);
-propGroup.add(bMesh);
-for (let wy = 2.5; wy < h - 1.5; wy += 2.4) {
-const win = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.85, d * 0.72), winMat);
+  const city = CITIES.find(c => c.id === cityId) || CITIES.at(0);
+  scene.background = new THREE.Color(city.sky);
+  scene.fog = new THREE.Fog(city.sky, 40, 140);
+
+  if (roadMesh) scene.remove(roadMesh);
+  if (groundMesh) scene.remove(groundMesh);
+  if (sceneryGroup) scene.remove(sceneryGroup);
+  if (roadLinesGroup) scene.remove(roadLinesGroup);
+  if (weatherParticles) scene.remove(weatherParticles);
+  if (finishArch) {
+    scene.remove(finishArch);
+    finishArch = null;
+  }
+
+  roadMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(9.4, 300),
+    new THREE.MeshLambertMaterial({ color: city.road })
+  );
+  roadMesh.rotation.x = -Math.PI / 2;
+  roadMesh.position.z = -100;
+  scene.add(roadMesh);
+
+  roadLinesGroup = new THREE.Group();
+  const curbMat = new THREE.MeshLambertMaterial({ color: 0x475569 });
+  const leftCurb = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.3, 300), curbMat);
+  leftCurb.position.set(-5.3, 0.15, -100);
+  const rightCurb = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.3, 300), curbMat);
+  rightCurb.position.set(5.3, 0.15, -100);
+  roadLinesGroup.add(leftCurb, rightCurb);
+
+  const lineMat = new THREE.MeshBasicMaterial({ color: city.neon });
+  for (let z = 10; z > -260; z -= 6) {
+    const l1 = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 2.8), lineMat);
+    l1.rotation.x = -Math.PI / 2;
+    l1.position.set(-1.3, 0.02, z);
+
+    const l2 = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 2.8), lineMat);
+    l2.rotation.x = -Math.PI / 2;
+    l2.position.set(1.3, 0.02, z);
+
+    roadLinesGroup.add(l1, l2);
+  }
+  scene.add(roadLinesGroup);
+
+  groundMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(180, 300),
+    new THREE.MeshLambertMaterial({ color: city.ground })
+  );
+  groundMesh.rotation.x = -Math.PI / 2;
+  groundMesh.position.set(0, -0.05, -100);
+  scene.add(groundMesh);
+
+  sceneryGroup = new THREE.Group();
+  const winMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+  const neonMat = new THREE.MeshBasicMaterial({ color: city.neon });
+  const trussMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
+
+  for (let i = 0; i < 36; i++) {
+    const side = i % 2 === 0 ? -1 : 1;
+    const propGroup = new THREE.Group();
+    propGroup.position.z = -i * 8;
+
+    const w = 4.5 + Math.random() * 2.5;
+    const h = 7 + Math.random() * 16;
+    const d = 5.4;
+    const bMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(w, h, d),
+      new THREE.MeshLambertMaterial({ color: city.building })
+    );
+    bMesh.position.set(side * (9.8 + Math.random() * 2.5), h / 2, 0);
+    propGroup.add(bMesh);
+
+    for (let wy = 2.5; wy < h - 1.5; wy += 2.4) {
+      const win = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.85, d * 0.72), winMat);
 win.position.set(bMesh.position.x - side * (w / 2 + 0.02), wy, 0);
 propGroup.add(win);
 }
@@ -1053,8 +984,10 @@ camera.aspect = window.innerWidth / window.innerHeight;
 camera.updateProjectionMatrix();
 renderer.setSize(window.innerWidth, window.innerHeight);
 });
-// 3. Boot 3D World
+try {
 buildPlayerModel();
 setupCityEnvironment(saveData.selectedCity);
-updateMenuUI();
 animate();
+} catch (err) {
+console.error('3D Engine Boot Notice:', err);
+}

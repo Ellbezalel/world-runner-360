@@ -35,14 +35,18 @@ function createListCard(title, subtitle1, subtitle2, btnText, btnClass, onClickF
 }
 
 function updateMenuUI() {
-  document.getElementById('menu-coins').textContent = saveData.coins;
-  document.getElementById('menu-naira').textContent = saveData.naira;
+  const coinsEl = document.getElementById('menu-coins');
+  const nairaEl = document.getElementById('menu-naira');
+  const cityEl = document.getElementById('menu-current-city');
+  if (coinsEl) coinsEl.textContent = saveData.coins;
+  if (nairaEl) nairaEl.textContent = saveData.naira;
   const city = CITIES.find(c => c.id === saveData.selectedCity) || CITIES.at(0);
-  document.getElementById('menu-current-city').textContent = city.name + ' (' + city.raceDist + 'm)';
+  if (cityEl) cityEl.textContent = city.name + ' (' + city.raceDist + 'm)';
 }
 
 function renderCities() {
   const list = document.getElementById('cities-list');
+  if (!list) return;
   list.innerHTML = '';
 
   CITIES.forEach(city => {
@@ -60,15 +64,15 @@ function renderCities() {
       function() {
         if (unlocked) {
           saveData.selectedCity = city.id;
-          setupCityEnvironment(city.id);
+          if (typeof setupCityEnvironment === 'function') setupCityEnvironment(city.id);
           persistSave();
           renderCities();
         } else if (saveData.coins >= city.cost) {
           saveData.coins -= city.cost;
           saveData.unlockedCities.push(city.id);
           saveData.selectedCity = city.id;
-          setupCityEnvironment(city.id);
-          playSound('powerup');
+          if (typeof setupCityEnvironment === 'function') setupCityEnvironment(city.id);
+          if (typeof playSound === 'function') playSound('powerup');
           persistSave();
           renderCities();
         } else {
@@ -83,6 +87,7 @@ function renderCities() {
 let activeShopTab = 'outfits';
 function renderShop() {
   const list = document.getElementById('shop-list');
+  if (!list) return;
   list.innerHTML = '';
   const items = SHOP_ITEMS[activeShopTab];
 
@@ -107,15 +112,15 @@ function renderShop() {
       function() {
         if (owned) {
           saveData[eqKey] = item.id;
-          buildPlayerModel();
+          if (typeof buildPlayerModel === 'function') buildPlayerModel();
           persistSave();
           renderShop();
         } else if (saveData[item.currency] >= item.cost) {
           saveData[item.currency] -= item.cost;
           saveData[ownedKey].push(item.id);
           saveData[eqKey] = item.id;
-          buildPlayerModel();
-          playSound('powerup');
+          if (typeof buildPlayerModel === 'function') buildPlayerModel();
+          if (typeof playSound === 'function') playSound('powerup');
           persistSave();
           renderShop();
         } else {
@@ -129,6 +134,7 @@ function renderShop() {
 
 function renderMissions() {
   const list = document.getElementById('missions-list');
+  if (!list) return;
   list.innerHTML = '';
 
   MISSION_TEMPLATES.forEach(m => {
@@ -150,7 +156,7 @@ function renderMissions() {
           saveData.coins += m.rewardCoins;
           saveData.naira += m.rewardNaira;
           saveData.claimedMissions.push(m.id);
-          playSound('powerup');
+          if (typeof playSound === 'function') playSound('powerup');
           persistSave();
           renderMissions();
         }
@@ -163,6 +169,7 @@ function renderMissions() {
 function renderLeaderboard(region) {
   const selectedRegion = region || 'World';
   const list = document.getElementById('leaderboard-list');
+  if (!list) return;
   list.innerHTML = '';
 
   const currentTrackObj = CITIES.find(c => c.id === saveData.selectedCity) || CITIES.at(0);
@@ -187,4 +194,106 @@ function renderLeaderboard(region) {
     );
     list.appendChild(card);
   });
+}
+
+// Wire ALL Menu & Modal Buttons Safely Here
+function bindMenuControls() {
+  updateMenuUI();
+
+  const playBtn = document.getElementById('btn-play');
+  const restartBtn = document.getElementById('btn-restart');
+  const homeBtn = document.getElementById('btn-home');
+  const reviveNairaBtn = document.getElementById('btn-revive-naira');
+  const muteBtn = document.getElementById('btn-mute');
+  const spinBtn = document.getElementById('btn-spin-action');
+
+  if (playBtn) {
+    playBtn.onclick = function() {
+      if (typeof startGame === 'function') startGame();
+    };
+  }
+
+  if (restartBtn) {
+    restartBtn.onclick = function() {
+      if (typeof startGame === 'function') startGame();
+    };
+  }
+
+  if (spinBtn) {
+    spinBtn.onclick = function() {
+      if (typeof trigger360Spin === 'function') trigger360Spin();
+    };
+  }
+
+  if (homeBtn) {
+    homeBtn.onclick = function() {
+      document.getElementById('gameover-menu').classList.add('hidden');
+      document.getElementById('main-menu').classList.remove('hidden');
+    };
+  }
+
+  if (reviveNairaBtn) {
+    reviveNairaBtn.onclick = function() {
+      if (saveData.naira >= 5) {
+        saveData.naira -= 5;
+        persistSave();
+        if (typeof clearEntities === 'function') clearEntities();
+        document.getElementById('gameover-menu').classList.add('hidden');
+        document.getElementById('hud').classList.remove('hidden');
+        if (typeof isPlaying !== 'undefined') isPlaying = true;
+        if (typeof playSound === 'function') playSound('powerup');
+      } else {
+        alert('You need 5 Naira Notes to continue!');
+      }
+    };
+  }
+
+  if (muteBtn) {
+    muteBtn.onclick = function(e) {
+      isMuted = !isMuted;
+      e.target.textContent = isMuted ? '🔇' : '🔊';
+    };
+  }
+
+  document.querySelectorAll('.nav-btn[data-modal]').forEach(btn => {
+    btn.onclick = function() {
+      const modalId = btn.getAttribute('data-modal');
+      const modalEl = document.getElementById(modalId);
+      if (modalEl) modalEl.classList.remove('hidden');
+      if (modalId === 'modal-cities') renderCities();
+      if (modalId === 'modal-shop') renderShop();
+      if (modalId === 'modal-missions') renderMissions();
+      if (modalId === 'modal-leaderboard') renderLeaderboard('World');
+    };
+  });
+
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.onclick = function() {
+      const m = btn.closest('.modal');
+      if (m) m.classList.add('hidden');
+    };
+  });
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.onclick = function() {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeShopTab = btn.getAttribute('data-tab');
+      renderShop();
+    };
+  });
+
+  document.querySelectorAll('.lb-tab').forEach(btn => {
+    btn.onclick = function() {
+      document.querySelectorAll('.lb-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderLeaderboard(btn.getAttribute('data-region'));
+    };
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bindMenuControls);
+} else {
+  bindMenuControls();
 }
